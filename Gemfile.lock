@@ -42,7 +42,10 @@ GEM
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.28.1)
       parser (>= 3.2.1.0)
+    rubocop-minitest (0.31.0)
+      rubocop (>= 1.39, < 2.0)
     ruby-progressbar (1.13.0)
+    sqlite3 (1.6.2-x86_64-darwin)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
@@ -55,6 +58,8 @@ DEPENDENCIES
   pluck_in_batches!
   rake (~> 13.0)
   rubocop (< 2)
+  rubocop-minitest
+  sqlite3
 
 BUNDLED WITH
    2.4.12

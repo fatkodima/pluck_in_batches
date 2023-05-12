@@ -1,3 +1,5 @@
+require: rubocop-minitest
+
 AllCops:
   TargetRubyVersion: 2.7
   NewCops: enable
@@ -6,8 +8,45 @@ AllCops:
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
+Style/WordArray:
+  EnforcedStyle: brackets
+
+Style/MultipleComparison:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Layout/IndentationConsistency:
+  EnforcedStyle: indented_internal_methods
+
+Layout/EmptyLinesAroundAccessModifier:
+  EnforcedStyle: only_before
+
+Layout/LineLength:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Exclude:
+    - test/*
+
+Metrics:
+  Enabled: false
+
 Bundler/OrderedGems:
   Enabled: false
 
 Gemspec/RequireMFA:
+  Enabled: false
+
+Minitest/EmptyLineBeforeAssertionMethods:
+  Enabled: false
+
+Minitest/MultipleAssertions:
   Enabled: false
