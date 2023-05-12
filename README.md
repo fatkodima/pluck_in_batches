@@ -1,34 +1,110 @@
 # PluckInBatches
 
-TODO: Delete this and the text below, and describe your gem
+ActiveRecord comes with `find_each` and `find_in_batches` methods to batch process records from a database.
+ActiveRecord also has the `pluck` method which allows the selection of a set of fields without pulling
+the entire record into memory.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/pluck_in_batches`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem combines these ideas and provides `pluck_each` and `pluck_in_batches` methods to allow
+batch processing of plucked fields from the database.
+
+It performs half of the number of SQL queries, allocates up to half of the memory and is up to 2x faster
+(or more, depending on how far is your database from the application) than the available alternative:
+
+```ruby
+# Before
+User.in_batches do |batch|
+  emails = batch.pluck(:emails)
+  # do something with emails
+end
+
+# Now, using this gem (up to 2x faster)
+User.pluck_in_batches(:email) do |emails|
+  # do something with emails
+end
+```
+
+## Requirements
+
+- Ruby 2.7+
+- ActiveRecord 6+
+
+If you need support for older versions, [open an issue](https://github.com/fatkodima/pluck_in_batches/issues/new).
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your application's Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
+```ruby
+gem 'pluck_in_batches'
+```
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+And then execute:
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+```sh
+$ bundle
+```
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+Or install it yourself as:
+
+```sh
+$ gem install pluck_in_batches
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+### `pluck_each`
+
+Behaves similarly to `find_each` ActiveRecord's method, but yields each set of values corresponding
+to the specified columns.
+
+```ruby
+# Single column
+User.where(active: true).pluck_each(:email) do |email|
+  # do something with email
+end
+
+# Multiple columns
+User.where(active: true).pluck_each(:id, :email) do |id, email|
+  # do something with id and email
+end
+```
+
+### `pluck_in_batches`
+
+Behaves similarly to `in_batches` ActiveRecord's method, but yields each batch
+of values corresponding to the specified columns.
+
+```ruby
+# Single column
+User.where("age > 21").pluck_in_batches(:email) do |emails|
+  jobs = emails.map { |email| PartyReminderJob.new(email) }
+  ActiveJob.perform_all_later(jobs)
+end
+
+# Multiple columns
+User.pluck_in_batches(:name, :email).with_index do |group, index|
+  puts "Processing group ##{index}"
+  jobs = group.map { |name, email| PartyReminderJob.new(name, email) }
+  ActiveJob.perform_all_later(jobs)
+end
+```
+
+Both methods support the following configuration options:
+
+* `:batch_size` - Specifies the size of the batch. Defaults to 1000.
+* `:start` - Specifies the primary key value to start from, inclusive of the value.
+* `:finish` - Specifies the primary key value to end at, inclusive of the value.
+* `:error_on_ignore` - Overrides the application config to specify if an error should be raised when
+  an order is present in the relation.
+* `:order` - Specifies the primary key order (can be `:asc` or `:desc`). Defaults to `:asc`.
 
 ## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/pluck_in_batches.
+Bug reports and pull requests are welcome on GitHub at https://github.com/fatkodima/pluck_in_batches.
 
 ## License
 
