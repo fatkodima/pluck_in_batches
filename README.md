@@ -1,5 +1,7 @@
 # PluckInBatches
 
+[![Build Status](https://github.com/fatkodima/pluck_in_batches/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/fatkodima/pluck_in_batches/actions/workflows/ci.yml)
+
 ActiveRecord comes with `find_each` and `find_in_batches` methods to batch process records from a database.
 ActiveRecord also has the `pluck` method which allows the selection of a set of fields without pulling
 the entire record into memory.
