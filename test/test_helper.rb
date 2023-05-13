@@ -32,6 +32,14 @@ def prepare_database
     "('nick-#{id}', 'User-#{id}')"
   end.join(", ")
   ActiveRecord::Base.connection.execute("INSERT INTO subscribers (nick, name) VALUES #{values}")
+
+  # Create products
+  values = 20.times.map do |i|
+    id = i + 1
+    shop_id = rand(1..5)
+    "(#{shop_id}, #{id}, '(#{shop_id}, #{id})')"
+  end.join(", ")
+  ActiveRecord::Base.connection.execute("INSERT INTO products (shop_id, id, name) VALUES #{values}")
 end
 
 prepare_database

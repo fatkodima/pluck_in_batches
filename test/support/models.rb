@@ -16,3 +16,7 @@ end
 class Subscriber < ActiveRecord::Base
   self.primary_key = :nick
 end
+
+class Product < ActiveRecord::Base
+  self.primary_key = [:shop_id, :id]
+end

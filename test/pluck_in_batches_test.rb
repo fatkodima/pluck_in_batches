@@ -225,9 +225,47 @@ class PluckInBatchesTest < TestCase
     assert_equal 1, User.pluck_in_batches(:id, batch_size: 10_000).size
   end
 
+  module CompositePrimaryKeys
+    def test_pluck_in_batches_should_iterate_over_composite_primary_key
+      skip if ar_version < 7.1
+
+      ids = Product.order(:shop_id, :id).ids
+      Product.pluck_in_batches(:shop_id, :id, batch_size: 1).with_index do |batch, index|
+        assert_kind_of Array, batch
+        assert_equal ids[index], batch.first
+      end
+    end
+
+    def test_pluck_in_batches_over_composite_primary_key_when_one_column_is_missing
+      skip if ar_version < 7.1
+
+      ids_and_names = Product.order(:shop_id, :id).pluck(:id, :name)
+      Product.pluck_in_batches(:id, :name, batch_size: 1).with_index do |batch, index|
+        assert_kind_of Array, batch
+        assert_equal ids_and_names[index], batch.first
+      end
+    end
+
+    def test_pluck_in_batches_over_composite_primary_key_should_start_from_the_start_option
+      skip if ar_version < 7.1
+
+      product = Product.second
+      batch = Product.pluck_in_batches(:name, batch_size: 1, start: product.id).first
+      assert_equal product.name, batch.first
+    end
+
+    def test_pluck_in_batches_over_composite_primary_key_should_end_at_the_finish_option
+      skip if ar_version < 7.1
+
+      product = Product.second_to_last
+      batch = Product.pluck_in_batches(:name, batch_size: 1, finish: product.id).reverse_each.first
+      assert_equal product.name, batch.first
+    end
+  end
+  include CompositePrimaryKeys
+
   private
     def with_error_on_ignored_order(klass, value)
-      ar_version = ActiveRecord.version.to_s.to_f
       if ar_version >= 7.0
         prev = ActiveRecord.error_on_ignored_order
         ActiveRecord.error_on_ignored_order = value
@@ -242,5 +280,9 @@ class PluckInBatchesTest < TestCase
       else
         klass.error_on_ignored_order = prev
       end
+    end
+
+    def ar_version
+      ActiveRecord.version.to_s.to_f
     end
 end

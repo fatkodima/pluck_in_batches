@@ -9,4 +9,10 @@ ActiveRecord::Schema.define do
     t.string :nick
     t.string :name
   end
+
+  create_table :products, primary_key: [:shop_id, :id], force: true do |t|
+    t.integer :shop_id
+    t.integer :id
+    t.string :name
+  end
 end
