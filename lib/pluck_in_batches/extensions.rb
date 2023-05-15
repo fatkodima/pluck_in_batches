@@ -13,9 +13,9 @@ module PluckInBatches
       #
       # See #pluck_in_batches for all the details.
       #
-      def pluck_each(*columns, start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block)
+      def pluck_each(*columns, start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, cursor_column: primary_key, &block)
         iterator = Iterator.new(self)
-        iterator.each(*columns, start: start, finish: finish, batch_size: batch_size, error_on_ignore: error_on_ignore, order: order, &block)
+        iterator.each(*columns, start: start, finish: finish, batch_size: batch_size, error_on_ignore: error_on_ignore, cursor_column: cursor_column, order: order, &block)
       end
 
       # Yields each batch of values corresponding to the specified columns that was found
@@ -41,7 +41,9 @@ module PluckInBatches
       # * <tt>:finish</tt> - Specifies the primary key value to end at, inclusive of the value.
       # * <tt>:error_on_ignore</tt> - Overrides the application config to specify if an error should be raised when
       #   an order is present in the relation.
-      # * <tt>:order</tt> - Specifies the primary key order (can be +:asc+ or +:desc+). Defaults to +:asc+.
+      # * <tt>:cursor_column</tt> - Specifies the column(s) on which the iteration should be done.
+      #   This column(s) should be orderable (e.g. an integer or string). Defaults to primary key.
+      # * <tt>:order</tt> - Specifies the cursor column(s) order (can be +:asc+ or +:desc+). Defaults to +:asc+.
       #
       # Limits are honored, and if present there is no requirement for the batch
       # size: it can be less than, equal to, or greater than the limit.
@@ -66,9 +68,9 @@ module PluckInBatches
       # NOTE: By its nature, batch processing is subject to race conditions if
       # other processes are modifying the database.
       #
-      def pluck_in_batches(*columns, start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block)
+      def pluck_in_batches(*columns, start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor_column: primary_key, order: :asc, &block)
         iterator = Iterator.new(self)
-        iterator.each_batch(*columns, start: start, finish: finish, batch_size: batch_size, error_on_ignore: error_on_ignore, order: order, &block)
+        iterator.each_batch(*columns, start: start, finish: finish, batch_size: batch_size, error_on_ignore: error_on_ignore, cursor_column: cursor_column, order: order, &block)
       end
     end
   end

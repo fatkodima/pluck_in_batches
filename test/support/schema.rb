@@ -15,4 +15,8 @@ ActiveRecord::Schema.define do
     t.integer :id
     t.string :name
   end
+
+  create_table :packages, id: :string, force: true do |t|
+    t.integer :version
+  end
 end

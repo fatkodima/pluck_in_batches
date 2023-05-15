@@ -264,6 +264,20 @@ class PluckInBatchesTest < TestCase
   end
   include CompositePrimaryKeys
 
+  def test_pluck_each_should_iterate_over_custom_cursor_column
+    ids = Package.order(:version).ids
+    Package.pluck_each(:id, batch_size: 1, cursor_column: :version).with_index do |id, index|
+      assert_equal ids[index], id
+    end
+  end
+
+  def test_pluck_in_batches_should_iterate_over_custom_cursor_column
+    ids = Package.order(:version).ids
+    Package.pluck_in_batches(:id, batch_size: 1, cursor_column: :version).with_index do |batch, index|
+      assert_equal ids[index], batch.first
+    end
+  end
+
   private
     def with_error_on_ignored_order(klass, value)
       if ar_version >= 7.0

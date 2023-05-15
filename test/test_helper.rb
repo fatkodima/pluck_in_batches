@@ -4,6 +4,7 @@ $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "pluck_in_batches"
 
 require "sqlite3"
+require "securerandom"
 require "minitest/autorun"
 
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
@@ -40,6 +41,14 @@ def prepare_database
     "(#{shop_id}, #{id}, '(#{shop_id}, #{id})')"
   end.join(", ")
   ActiveRecord::Base.connection.execute("INSERT INTO products (shop_id, id, name) VALUES #{values}")
+
+  # Create packages
+  values = 10.times.map do |i|
+    id = SecureRandom.uuid
+    version = i + 1
+    "('#{id}', #{version})"
+  end.join(", ")
+  ActiveRecord::Base.connection.execute("INSERT INTO packages (id, version) VALUES #{values}")
 end
 
 prepare_database

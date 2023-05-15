@@ -20,3 +20,6 @@ end
 class Product < ActiveRecord::Base
   self.primary_key = [:shop_id, :id]
 end
+
+class Package < ActiveRecord::Base
+end

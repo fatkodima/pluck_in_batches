@@ -54,6 +54,7 @@ PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
+  activerecord
   minitest (~> 5.0)
   pluck_in_batches!
   rake (~> 13.0)
