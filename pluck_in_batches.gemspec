@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["fatkodima"]
   spec.email = ["fatkodima123@gmail.com"]
 
-  spec.summary = "Change"
+  spec.summary = "A faster alternative to the custom use of `in_batches` with `pluck`."
   spec.homepage = "https://github.com/fatkodima/pluck_in_batches"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.7.0"
