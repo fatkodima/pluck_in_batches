@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/fatkodima/pluck_in_batches/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/fatkodima/pluck_in_batches/actions/workflows/ci.yml)
 
-ActiveRecord comes with `find_each` and `find_in_batches` methods to batch process records from a database.
+ActiveRecord comes with `find_each` / `find_in_batches` / `in_batches` methods to batch process records from a database.
 ActiveRecord also has the `pluck` method which allows the selection of a set of fields without pulling
 the entire record into memory.
 
@@ -14,7 +14,7 @@ It performs half of the number of SQL queries, allocates up to half of the memor
 
 ```ruby
 # Before
-User.in_batches do |batch|
+User.in_batches do |batch| # or .find_in_batches, or .select(:email).find_each etc
   emails = batch.pluck(:emails)
   # do something with emails
 end
