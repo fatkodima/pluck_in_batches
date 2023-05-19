@@ -94,6 +94,7 @@ end
 Both methods support the following configuration options:
 
 * `:batch_size` - Specifies the size of the batch. Defaults to 1000.
+  Also aliased as `:of`.
 * `:start` - Specifies the primary key value to start from, inclusive of the value.
 * `:finish` - Specifies the primary key value to end at, inclusive of the value.
 * `:error_on_ignore` - Overrides the application config to specify if an error should be raised when

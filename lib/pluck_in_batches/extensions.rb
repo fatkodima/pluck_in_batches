@@ -13,7 +13,7 @@ module PluckInBatches
       #
       # See #pluck_in_batches for all the details.
       #
-      def pluck_each(*columns, start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, cursor_column: primary_key, &block)
+      def pluck_each(*columns, start: nil, finish: nil, of: 1000, batch_size: of, error_on_ignore: nil, order: :asc, cursor_column: primary_key, &block)
         iterator = Iterator.new(self)
         iterator.each(*columns, start: start, finish: finish, batch_size: batch_size, error_on_ignore: error_on_ignore, cursor_column: cursor_column, order: order, &block)
       end
@@ -37,6 +37,7 @@ module PluckInBatches
       #
       # ==== Options
       # * <tt>:batch_size</tt> - Specifies the size of the batch. Defaults to 1000.
+      # * <tt>:of</tt> - Same as +:batch_size+.
       # * <tt>:start</tt> - Specifies the primary key value to start from, inclusive of the value.
       # * <tt>:finish</tt> - Specifies the primary key value to end at, inclusive of the value.
       # * <tt>:error_on_ignore</tt> - Overrides the application config to specify if an error should be raised when
@@ -68,7 +69,7 @@ module PluckInBatches
       # NOTE: By its nature, batch processing is subject to race conditions if
       # other processes are modifying the database.
       #
-      def pluck_in_batches(*columns, start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor_column: primary_key, order: :asc, &block)
+      def pluck_in_batches(*columns, start: nil, finish: nil, of: 1000, batch_size: of, error_on_ignore: nil, cursor_column: primary_key, order: :asc, &block)
         iterator = Iterator.new(self)
         iterator.each_batch(*columns, start: start, finish: finish, batch_size: batch_size, error_on_ignore: error_on_ignore, cursor_column: cursor_column, order: order, &block)
       end
