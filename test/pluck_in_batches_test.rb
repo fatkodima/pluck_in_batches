@@ -261,6 +261,35 @@ class PluckInBatchesTest < TestCase
       batch = Product.pluck_in_batches(:name, batch_size: 1, finish: product.id).reverse_each.first
       assert_equal product.name, batch.first
     end
+
+    def test_pluck_in_batches_should_iterate_over_composite_primary_key_using_multiple_column_ordering
+      skip if ar_version < 7.1
+
+      ids = Product.order(shop_id: :asc, id: :desc).ids
+      index = 0
+      Product.pluck_in_batches(:shop_id, :id, batch_size: 1, order: [:asc, :desc]) do |batch|
+        assert_kind_of Array, batch
+        assert_equal ids[index], batch.first
+        index += 1
+      end
+      assert_equal ids.size, index
+    end
+
+    def test_pluck_in_batches_over_composite_primary_key_using_multiple_column_ordering_should_start_from_the_start_option
+      skip if ar_version < 7.1
+
+      product = Product.order(shop_id: :asc, id: :desc).second
+      batch = Product.pluck_in_batches(:name, batch_size: 1, start: product.id, order: [:asc, :desc]).first
+      assert_equal product.name, batch.first
+    end
+
+    def test_pluck_in_batches_over_composite_primary_key_using_multiple_column_ordering_should_end_at_the_finish_option
+      skip if ar_version < 7.1
+
+      product = Product.order(shop_id: :asc, id: :desc).second_to_last
+      batch = Product.pluck_in_batches(:name, batch_size: 1, finish: product.id, order: [:asc, :desc]).to_a.last
+      assert_equal product.name, batch.first
+    end
   end
   include CompositePrimaryKeys
 

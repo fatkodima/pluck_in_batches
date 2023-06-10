@@ -44,7 +44,16 @@ module PluckInBatches
       #   an order is present in the relation.
       # * <tt>:cursor_column</tt> - Specifies the column(s) on which the iteration should be done.
       #   This column(s) should be orderable (e.g. an integer or string). Defaults to primary key.
-      # * <tt>:order</tt> - Specifies the cursor column(s) order (can be +:asc+ or +:desc+). Defaults to +:asc+.
+      # * <tt>:order</tt> - Specifies the cursor column(s) order (can be +:asc+ or +:desc+ or an array consisting
+      #   of :asc or :desc). Defaults to +:asc+.
+      #
+      #     class Book < ActiveRecord::Base
+      #       self.primary_key = [:author_id, :version]
+      #     end
+      #
+      #     Book.pluck_in_batches(:title, order: [:asc, :desc])
+      #
+      #   In the above code, +author_id+ is sorted in ascending order and +version+ in descending order.
       #
       # Limits are honored, and if present there is no requirement for the batch
       # size: it can be less than, equal to, or greater than the limit.

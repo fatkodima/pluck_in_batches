@@ -101,7 +101,8 @@ Both methods support the following configuration options:
   an order is present in the relation.
 * `:cursor_column` - Specifies the column(s) on which the iteration should be done.
   This column(s) should be orderable (e.g. an integer or string). Defaults to primary key.
-* `:order` - Specifies the primary key order (can be `:asc` or `:desc`). Defaults to `:asc`.
+* `:order` - Specifies the primary key order (can be `:asc` or `:desc` or
+  an array consisting of :asc or :desc). Defaults to `:asc`.
 
 ## Development
 
