@@ -25,6 +25,8 @@ User.pluck_in_batches(:email) do |emails|
 end
 ```
 
+**Note**: You may also find [`sidekiq-iteration`](https://github.com/fatkodima/sidekiq-iteration) useful when iterating over large collections in Sidekiq jobs.
+
 ## Requirements
 
 - Ruby 2.7+
