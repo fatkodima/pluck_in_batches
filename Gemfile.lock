@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pluck_in_batches (0.1.0)
+    pluck_in_batches (0.2.0)
       activerecord (>= 6.0)
 
 GEM
@@ -53,6 +53,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-20
+  x86_64-darwin-21
   x86_64-linux
 
 DEPENDENCIES
