@@ -36,13 +36,13 @@ module PluckInBatches
       end
 
       pluck_columns = columns.map do |column|
-        case column
-        when String, Arel::Nodes::SqlLiteral
+        if Arel.arel_node?(column)
           column
         else
           column.to_s
         end
       end
+
       cursor_columns = Array(cursor_column).map(&:to_s)
       cursor_column_indexes = cursor_column_indexes(pluck_columns, cursor_columns)
       missing_cursor_columns = cursor_column_indexes.count(&:nil?)
