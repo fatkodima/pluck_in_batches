@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pluck_in_batches (0.2.0)
+    pluck_in_batches (0.3.0)
       activerecord (>= 6.0)
 
 GEM

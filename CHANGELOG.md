@@ -1,6 +1,12 @@
 ## master (unreleased)
 
+## 0.3.0 (2024-11-03)
+
 - Support plucking custom Arel columns
+
+  ```ruby
+  User.pluck_in_batches(:id, Arel.sql("json_extract(users.metadata, '$.rank')"))
+  ```
 
 ## 0.2.0 (2023-07-24)
 

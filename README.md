@@ -91,6 +91,11 @@ User.pluck_in_batches(:name, :email).with_index do |group, index|
   jobs = group.map { |name, email| PartyReminderJob.new(name, email) }
   ActiveJob.perform_all_later(jobs)
 end
+
+# Custom arel column
+User.pluck_in_batches(:id, Arel.sql("json_extract(users.metadata, '$.rank')")).with_index do |group, index|
+  # ...
+end
 ```
 
 Both methods support the following configuration options:
