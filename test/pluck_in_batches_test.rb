@@ -48,6 +48,17 @@ class PluckInBatchesTest < TestCase
     end
   end
 
+  def test_pluck_in_batches_should_return_batches_for_arel_columns
+    ids_and_ranks = User.order(:id).pluck(:id, Arel.sql("json_extract(users.metadata, '$.rank')"))
+
+    assert_queries(User.count + 1) do
+      User.pluck_in_batches(:id, Arel.sql("json_extract(users.metadata, '$.rank')"), batch_size: 1).with_index do |batch, index|
+        assert_kind_of Array, batch
+        assert_equal ids_and_ranks[index], batch.first
+      end
+    end
+  end
+
   def pluck_in_batches_desc_order
     ids = User.order(id: :desc).ids
     assert_queries(User.count + 1) do
