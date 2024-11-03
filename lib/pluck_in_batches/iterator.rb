@@ -35,7 +35,14 @@ module PluckInBatches
         raise ArgumentError, ":order must be :asc or :desc or an array consisting of :asc or :desc, got #{order.inspect}"
       end
 
-      pluck_columns = columns.map(&:to_s)
+      pluck_columns = columns.map do |column|
+        case column
+        when String, Arel::Nodes::SqlLiteral
+          column
+        else
+          column.to_s
+        end
+      end
       cursor_columns = Array(cursor_column).map(&:to_s)
       cursor_column_indexes = cursor_column_indexes(pluck_columns, cursor_columns)
       missing_cursor_columns = cursor_column_indexes.count(&:nil?)

@@ -23,9 +23,9 @@ def prepare_database
   # Create users
   values = 20.times.map do |i|
     id = i + 1
-    "(#{id}, 'User-#{id}')"
+    "(#{id}, 'User-#{id}', json('{\"rank\": #{i}}'))"
   end.join(", ")
-  ActiveRecord::Base.connection.execute("INSERT INTO users (id, name) VALUES #{values}")
+  ActiveRecord::Base.connection.execute("INSERT INTO users (id, name, metadata) VALUES #{values}")
 
   # Create subscribers
   values = 10.times.map do |i|
